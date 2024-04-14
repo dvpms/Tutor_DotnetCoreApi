@@ -2,16 +2,22 @@
 using DotnetCoreApi.Data;
 using Microsoft.EntityFrameworkCore;
 
-public  static class DependencyInjection
+using Microsoft.EntityFrameworkCore;
+
+public static class DependencyInjection
+{
+    public static IServiceCollection AddDbContext(this IServiceCollection services, IConfiguration configuration)
     {
-        public static IServiceCollection AddDbContext(this IServiceCollection services, IConfiguration configuration)
+        var connectionString = configuration.GetConnectionString("DefaultConnection");
+        if (connectionString is null)
         {
-            var connectionString = configuration.GetConnectionString("Default");
-            if (connectionString is null)
-            {
-                Environment.Exit(1);
-            }
-            services.AddDbContext<ApplicationDbContext>(options=>options.UseSqlServer(connectionString));
-            return services;
+            Environment.Exit(1);
         }
+        
+        var serverVersion = new MySqlServerVersion(new Version(8, 0, 36)); // Sesuaikan versi MySQL yang Anda gunakan
+        
+        services.AddDbContext<ApplicationDbContext>(options => options.UseMySql(connectionString, serverVersion));
+        
+        return services;
     }
+}
