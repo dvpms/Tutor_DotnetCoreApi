@@ -12,7 +12,8 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 
 
-
+var jwtKey = builder.Configuration.GetSection("Jwt:Key").Get<string>();
+var jwtIssuer= builder.Configuration.GetSection("Jwt:Issuer").Get<string>();
 
 
 builder.Services.AddDbContext(builder.Configuration);
